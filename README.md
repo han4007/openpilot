@@ -29,7 +29,7 @@ Note that only the kegman branch is 0.5.9 as it breaks Gernby's lat control.  I 
 
 
 List of changes and tweaks (latest changes at the top):
-- <b>Added moar JSON parameters</b>:  
+- <b>Added moar JSON parameters (COMING SOON)</b>:  
 
 "battPercOff": "20",  Turn off the Eon if the Eon battery percentage dips below this value
 
