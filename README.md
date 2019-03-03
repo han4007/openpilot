@@ -18,19 +18,28 @@ I will attempt to detail the changes in each of the branches here:
 
 Note that only the kegman branch is 0.5.9 as it breaks Gernby's lat control.  I am still trying to get it to work with Clarity.  This may take time.
 
-<b>kegman (0.5.9)</b> - this is the default branch which does not include Gernby's resonant feed forward steering (i.e. it's comma's default steering) - it now includes GM code (needs testing)
+<b>kegman (0.5.9)</b> - this is the default branch which NOW INCLUDES Gernby's resonant feed forward steering 
 
-<b>kegman-plusGernbySteering</b> - (New!  merged with 0.5.9) this branch is everything in the kegman branch PLUS a Gernby's LATEST feed forward steering.  This also includes code for GM cars.  (thx to @jamezz for the code and @cryptokylan for submitting the GM stuff!)
+<b>kegman-plusGernbySteering-0.5.8</b> - Old Openpilot v0.5.8 with Gernby's steering.
 
-<b>kegman-plusPilotAwesomeness (0.5.8 only)</b> - <u>If you have a Honda Pilot, OR Honda Ridgeline use this branch.</u>  It has everything in kegman branch, uses my PID tuning + a magical older version of Gernby's FF steering which just happened to work very well across all driving conditions including slanted (crowned roads), wind gusts, road bumps, centering on curves, and keeping proper distance from curbs.  I have yet to test a combination of FF steering and PID tuning that can beat the performance of this for Honda Pilots.
+<b>kegman-plusPilotAwesomeness-0.5.8</b> - Old Openpilot v0.5.8 for Pilots and Ridgelines
 
-Note above comments apply to Clarity testing branches as well.
+<b>kegman-plusClarity (0.5.9)</b> - this branch is the same as 'kegman' but with changes that make it work on Honda Clarity
+
 
 
 List of changes and tweaks (latest changes at the top):
-- <b>Big Model preview</b>  Applied Big Model commit.
+- <b>Added moar JSON parameters</b>:  
 
-- <b>Tone down PID tuning for Pilot and Ridgline for 0.5.9</b>  Comma changed latcontrol for 0.5.9, so I had to tone down the PID tuning, reducing steerKpV and steerKiV (to 0.45 and 0.135) because of a slow ping-pong on my 2018 Pilot.  Wheel shaking on 2017 Pilots with 0.5.9 have been reported and this change should help, but may not be sufficient for the 2017 model (and possibly 2016).  2016/7 owners may need to adjust steerKpV and steerKiV manually back to 0.38 and 0.11 in /data/openpilot/selfdrive/car/honda/interface.py to reduce the shake.
+"battPercOff": "20",  Turn off the Eon if the Eon battery percentage dips below this value
+
+"brakeStoppingTarget": "0.25",  How much OP should mash the brakes when the car is stopped.  Increase if you live in hilly areas and need more standstill braking pressure.
+
+"carVoltageMinEonShutdown": "12200",  Eon stops charging if car battery goes below this level.  NOTE:  12.8V is 100%,  11.8V is 0%.  I would recommended that you unplug your Eon if you are away from your vehicle for more than a few hours and put a battery charger on your car's battery weekly to avoid wrecking your battery.
+
+- <b>Big Model preview</b>:  Applied Big Model commit.  Apparently this sucks more power so suggest adjusting Eon battery charge limits a tad higher:  75-80% as an example.  
+
+- <b>Tone down PID tuning for Pilot and Ridgline for 0.5.9</b>:  Comma changed latcontrol for 0.5.9, so I had to tone down the PID tuning, reducing steerKpV and steerKiV (to 0.45 and 0.135) because of a slow ping-pong on my 2018 Pilot.  Wheel shaking on 2017 Pilots with 0.5.9 have been reported and this change should help, but may not be sufficient for the 2017 model (and possibly 2016).  2016/7 owners may need to adjust steerKpV and steerKiV manually back to 0.38 and 0.11 in /data/openpilot/selfdrive/car/honda/interface.py to reduce the shake.
 
 - <b>Persist some configuration data in JSON file (/data/kegman.json)</b>:  Sometimes you just want to make a tweak and persist some data that doesn't get wiped out the next time OP is updated.  Stuff like:
 
