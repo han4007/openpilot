@@ -141,7 +141,7 @@ class CarState(object):
     self.a_ego = float(v_ego_x[1])
     self.standstill = not self.v_wheel > 0.001
 
-    self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
+    self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION'] + 3
 
     # Only use the reported steer rate from some Toyotas, since others are very noisy
     if self.CP.carFingerprint in (CAR.RAV4, CAR.RAV4H, CAR.COROLLA):
