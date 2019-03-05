@@ -142,7 +142,7 @@ class CarInterface(object):
       tire_stiffness_factor = 0.7933
       ret.mass = 3400 * CV.LB_TO_KG + std_cargo #mean between normal and hybrid
       ret.steerKpV, ret.steerKiV = [[0.3], [0.1]]
-      ret.steerKf = 0.00006
+      ret.steerKf = 0.000068
 
     elif candidate in [CAR.HIGHLANDER, CAR.HIGHLANDERH]:
       stop_and_go = True
@@ -238,6 +238,8 @@ class CarInterface(object):
 
     # speeds
     ret.vEgo = self.CS.v_ego
+    if self.CP.carFingerprint in [CAR.CAMRYH]:
+      ret.vEgo = self.CS.v_ego * 1.045
     ret.vEgoRaw = self.CS.v_ego_raw
     ret.aEgo = self.CS.a_ego
     ret.yawRate = self.VM.yaw_rate(self.CS.angle_steers * CV.DEG_TO_RAD, self.CS.v_ego)
@@ -273,6 +275,8 @@ class CarInterface(object):
     # cruise state
     ret.cruiseState.enabled = self.CS.pcm_acc_active
     ret.cruiseState.speed = self.CS.v_cruise_pcm * CV.KPH_TO_MS
+    if self.CP.carFingerprint in [CAR.CAMRYH]:
+      ret.cruiseState.speed = self.CS.v_cruise_pcm + 5 * CV.KPH_TO_MS
     ret.cruiseState.available = bool(self.CS.main_on)
     ret.cruiseState.speedOffset = 0.
 
