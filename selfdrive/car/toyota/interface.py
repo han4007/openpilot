@@ -276,7 +276,7 @@ class CarInterface(object):
     ret.cruiseState.enabled = self.CS.pcm_acc_active
     ret.cruiseState.speed = self.CS.v_cruise_pcm * CV.KPH_TO_MS
     if self.CP.carFingerprint in [CAR.CAMRYH]:
-      ret.cruiseState.speed = self.CS.v_cruise_pcm + 5 * CV.KPH_TO_MS
+      ret.cruiseState.speed = (self.CS.v_cruise_pcm + 5) * CV.KPH_TO_MS
     ret.cruiseState.available = bool(self.CS.main_on)
     ret.cruiseState.speedOffset = 0.
 
