@@ -62,7 +62,10 @@ def get_can_parser(CP):
 
   if CP.carFingerprint == CAR.PRIUS:
     signals += [("STATE", "AUTOPARK_STATUS", 0)]
-  
+
+  if CP.carFingerprint == CAR.CAMRYH:
+    signals += [("STEER_ANGLE", "STEER_TORQUE_SENSOR", 0)]
+
   # add gas interceptor reading if we are using it
   if CP.enableGasInterceptor:
       signals.append(("INTERCEPTOR_GAS", "GAS_SENSOR", 0))
@@ -142,6 +145,9 @@ class CarState(object):
     self.standstill = not self.v_wheel > 0.001
 
     self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION'] + 3
+    if self.CP.carFingerprint in (CAR.CAMRYH):
+      self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
+
 
     # Only use the reported steer rate from some Toyotas, since others are very noisy
     if self.CP.carFingerprint in (CAR.RAV4, CAR.RAV4H, CAR.COROLLA):
