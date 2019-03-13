@@ -238,8 +238,6 @@ class CarInterface(object):
 
     # speeds
     ret.vEgo = self.CS.v_ego
-    if self.CP.carFingerprint in [CAR.CAMRYH]:
-      ret.vEgo = self.CS.v_ego * 1.045
     ret.vEgoRaw = self.CS.v_ego_raw
     ret.aEgo = self.CS.a_ego
     ret.yawRate = self.VM.yaw_rate(self.CS.angle_steers * CV.DEG_TO_RAD, self.CS.v_ego)
