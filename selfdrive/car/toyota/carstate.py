@@ -151,7 +151,7 @@ class CarState(object):
 
     self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
     if self.CP.carFingerprint in (CAR.CAMRYH):
-      self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] * 0.992
+      self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
 
 
     # Only use the reported steer rate from some Toyotas, since others are very noisy
