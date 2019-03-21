@@ -31,7 +31,7 @@ class RadarInterface(object):
   def __init__(self, CP):
     # radar
     self.pts = {}
-    self.valid_cnt = {key: 0 for key in RADAR_A_MSGS}
+    self.valid_cnt = {key: 0 for key in RADAR_C_MSGS}
     self.track_id = 0
 
     self.delay = 0.0  # Delay of radar
@@ -49,8 +49,6 @@ class RadarInterface(object):
     while 1:
       tm = int(sec_since_boot() * 1e9)
       updated_messages.update(self.rcp.update(tm, True))
-      if RADAR_B_MSGS[-1] in updated_messages:
-        break
 
     errors = []
     if not self.rcp.can_valid:
@@ -59,7 +57,7 @@ class RadarInterface(object):
     ret.canMonoTimes = canMonoTimes
 
     for ii in updated_messages:
-      if ii in RADAR_A_MSGS:
+      if ii in RADAR_C_MSGS:
         cpt = self.rcp.vl[ii]
 
         if cpt['LONG_DIST'] >=255 or cpt['NEW_TRACK']:
