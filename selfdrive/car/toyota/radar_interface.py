@@ -31,8 +31,8 @@ class RadarInterface(object):
   def __init__(self, CP):
     # radar
     self.pts = {}
-    self.valid_cnt = {key: 0 for key in RADAR_C_MSGS}
     self.track_id = 0
+    self.prev_track = 0
 
     self.delay = 0.0  # Delay of radar
 
@@ -59,20 +59,9 @@ class RadarInterface(object):
     for ii in updated_messages:
       if ii in RADAR_C_MSGS:
         cpt = self.rcp.vl[ii]
-
-        if cpt['LONG_DIST'] >=255 or cpt['NEW_TRACK']:
-          self.valid_cnt[ii] = 0    # reset counter
-        if cpt['VALID'] and cpt['LONG_DIST'] < 255:
-          self.valid_cnt[ii] += 1
-        else:
-          self.valid_cnt[ii] = max(self.valid_cnt[ii] -1, 0)
-
-        score = self.rcp.vl[ii+16]['SCORE']
-        # print ii, self.valid_cnt[ii], score, cpt['VALID'], cpt['LONG_DIST'], cpt['LAT_DIST']
-
         # radar point only valid if it's a valid measurement and score is above 50
-        if cpt['VALID'] or (score > 50 and cpt['LONG_DIST'] < 255 and self.valid_cnt[ii] > 0):
-          if ii not in self.pts or cpt['NEW_TRACK']:
+        if cpt['VALID']:
+          if ii not in self.pts or cpt['NEW_TRACK'] != self.prev_track:
             self.pts[ii] = car.RadarState.RadarPoint.new_message()
             self.pts[ii].trackId = self.track_id
             self.track_id += 1
@@ -81,10 +70,12 @@ class RadarInterface(object):
           self.pts[ii].vRel = cpt['REL_SPEED']
           self.pts[ii].aRel = float('nan')
           self.pts[ii].yvRel = float('nan')
-          self.pts[ii].measured = bool(cpt['VALID'])
+          self.pts[ii].measured = True
         else:
           if ii in self.pts:
             del self.pts[ii]
+
+    self.prev_track = cpt['NEW_TRACK']
 
     ret.points = self.pts.values()
     return ret
