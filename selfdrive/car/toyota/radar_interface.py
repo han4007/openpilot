@@ -8,7 +8,7 @@ from common.realtime import sec_since_boot
 from selfdrive.services import service_list
 import selfdrive.messaging as messaging
 from selfdrive.car.toyota.values import NO_DSU_CAR
-
+from selfdrive.car.toyota.carstate import CarState
 
 RADAR_C_MSGS = list(range(0x680, 0x685))
 
@@ -18,11 +18,11 @@ def _create_radard_can_parser():
   msg_c_n = len(RADAR_C_MSGS)
 
   signals = zip(['LONG_DIST'] * msg_c_n + ['LAT_DIST'] * msg_c_n +
-                ['REL_SPEED'] * msg_c_n + ['VALID'] * msg_c_n + ['SCORE'] * msg_c_n,
+                ['LEAD_SPEED'] * msg_c_n + ['VALID'] * msg_c_n + ['SCORE'] * msg_c_n,
                 RADAR_C_MSGS * 5,
                 [255] * msg_c_n + [1] * msg_c_n + [0] * msg_c_n + [0] * msg_c_n + [0] * msg_c_n)
 
-  checks = zip(RADAR_C_MSGS, [20])
+  checks = zip(RADAR_C_MSGS, [10])
 
   return CANParser(os.path.splitext(dbc_f)[0], signals, checks, 1)
 
@@ -41,6 +41,8 @@ class RadarInterface(object):
     context = zmq.Context()
     self.logcan = messaging.sub_sock(context, service_list['can'].port)
 
+    self.CS = CarState(CP)
+    
   def update(self):
 
     ret = car.RadarState.new_message()
@@ -67,7 +69,7 @@ class RadarInterface(object):
             self.track_id += 1
           self.pts[ii].dRel = cpt['LONG_DIST']  # from front of car
           self.pts[ii].yRel = -cpt['LAT_DIST']  # in car frame's y axis, left is positive
-          self.pts[ii].vRel = cpt['REL_SPEED']
+          self.pts[ii].vRel = cpt['LEAD_SPEED'] - self.CS.v_ego
           self.pts[ii].aRel = float('nan')
           self.pts[ii].yvRel = float('nan')
           self.pts[ii].measured = True
