@@ -144,7 +144,10 @@ class CarState(object):
     self.a_ego = float(v_ego_x[1])
     self.standstill = not v_wheel > 0.001
     if self.CP.carFingerprint in (CAR.CAMRYH):
-      self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
+      # get offset and apply it to the "good" steering message 
+      steer_angle_1 = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
+      steer_angle_2 = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
+      self.angle_steers = steer_angle_1 + (steer_angle_2 - steer_angle_1)
     else:
       self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
     self.angle_steers_rate = cp.vl["STEER_ANGLE_SENSOR"]['STEER_RATE']
